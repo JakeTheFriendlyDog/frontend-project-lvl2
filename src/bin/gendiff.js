@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 import fs from 'fs';
+import path from 'path';
+import { program } from 'commander';
 import genDiff from '..';
-
-const path = require('path');
-const { program } = require('commander');
 
 
 program
