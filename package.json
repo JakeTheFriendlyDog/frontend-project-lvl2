@@ -10,7 +10,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "jest --colors --watch",
+    "test": "jest --colors",
     "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
     "prepublishOnly": "npm run build"
   },
