@@ -11,5 +11,8 @@ CodeClimate's Test Coverage Badge:
 GitHub Action's Badge: 
 ![Node CI](https://github.com/JakeTheFriendlyDog/frontend-project-lvl2/workflows/Node%20CI/badge.svg)
 
-Demo of how it works
+Compare JSON
 [![asciicast](https://asciinema.org/a/U1hEsNtjN1T7DVjJjvU1q09Va.svg)](https://asciinema.org/a/U1hEsNtjN1T7DVjJjvU1q09Va)
+
+Compare YAML/YML
+[![asciicast](https://asciinema.org/a/J9gnRJKXjnkiITtIM0uXL83iV.svg)](https://asciinema.org/a/J9gnRJKXjnkiITtIM0uXL83iV)

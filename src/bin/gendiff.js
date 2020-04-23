@@ -1,8 +1,6 @@
 #!/usr/bin/env node
-import fs from 'fs';
-import path from 'path';
-import { program } from 'commander';
-import genDiff from '..';
+import program from 'commander';
+import genDiff from '../index.js';
 
 
 program
@@ -13,11 +11,7 @@ program
   .option('-f --format [type]', 'output format')
   .arguments('<firstConfig> <secondConfig>')
   .action((firstConfig, secondConfig) => {
-    const pathToFirstFile = path.resolve(firstConfig);
-    const pathToSecondFile = path.resolve(secondConfig);
-    const firstFileData = fs.readFileSync(pathToFirstFile, (data) => data);
-    const secondFileData = fs.readFileSync(pathToSecondFile, (data) => data);
-    return genDiff(firstFileData, secondFileData);
+    genDiff(firstConfig, secondConfig);
   });
 
 program.parse(process.argv);

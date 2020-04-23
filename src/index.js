@@ -1,25 +1,27 @@
-export default (firstJson, secondJson) => {
-  const objFromFirstJson = JSON.parse(firstJson);
-  const objFromSecondJson = JSON.parse(secondJson);
-  const keysFromFirstObj = Object.keys(objFromFirstJson);
-  const keysFromSecondObj = Object.keys(objFromSecondJson);
+import parse from './parsers.js';
+
+export default (firstConfig, secondConfig) => {
+  const objFromFirstConfig = parse(firstConfig);
+  const objFromSecondConfig = parse(secondConfig);
+  const keysFromFirstObj = Object.keys(objFromFirstConfig);
+  const keysFromSecondObj = Object.keys(objFromSecondConfig);
   const allKeys = [...keysFromFirstObj, ...keysFromSecondObj];
   const onlyUniqueKeys = allKeys.filter((x, i) => i === allKeys.indexOf(x));
 
   const differences = onlyUniqueKeys.reduce(((acc, key) => {
     if (keysFromFirstObj.includes(key) && keysFromSecondObj.includes(key)) {
-      if (objFromFirstJson[key] === objFromSecondJson[key]) {
-        acc[`  ${key}`] = objFromFirstJson[key];
+      if (objFromFirstConfig[key] === objFromSecondConfig[key]) {
+        acc[`  ${key}`] = objFromFirstConfig[key];
         return acc;
       }
-      acc[`- ${key}`] = objFromFirstJson[key];
-      acc[`+ ${key}`] = objFromSecondJson[key];
+      acc[`- ${key}`] = objFromFirstConfig[key];
+      acc[`+ ${key}`] = objFromSecondConfig[key];
     }
     if (keysFromFirstObj.includes(key) && !keysFromSecondObj.includes(key)) {
-      acc[`- ${key}`] = objFromFirstJson[key];
+      acc[`- ${key}`] = objFromFirstConfig[key];
     }
     if (!keysFromFirstObj.includes(key) && keysFromSecondObj.includes(key)) {
-      acc[`+ ${key}`] = objFromSecondJson[key];
+      acc[`+ ${key}`] = objFromSecondConfig[key];
     }
     return acc;
   }), {});
