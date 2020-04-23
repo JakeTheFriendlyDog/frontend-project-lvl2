@@ -2,7 +2,7 @@ install:
 	npm install
 
 run:
-	npx babel-node src/bin/gendiff.js before.json /home/nick/hexlet/frontend-project-lvl2/after.json
+	npx babel-node src/bin/gendiff.js __tests__/__fixtures__/before.json __tests__/__fixtures__/after.json
 
 build:
 	rm -rf dist
