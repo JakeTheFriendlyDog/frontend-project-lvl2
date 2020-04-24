@@ -5,27 +5,38 @@ import parse from '../src/parsers.js';
 
 const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', filename);
 const readFile = (filename) => getFixturePath(filename);
+const compare = (pathToFirstFile, pathToSecondFile) => {
+  const firstFile = readFile(pathToFirstFile);
+  const secondFile = readFile(pathToSecondFile);
+  const result = genDiff(firstFile, secondFile);
+  return result;
+};
 
+const resultDoc = parse(readFile('comparisonResult.txt'));
 
-test('compare before.json with after.json', () => {
-  const beforeJson = readFile('before.json');
-  const afterJson = readFile('after.json');
-  const resultDoc = parse(readFile('comparisonResult.txt'));
-  expect(genDiff(beforeJson, afterJson)).toBe(resultDoc);
-  expect(typeof (genDiff(beforeJson, afterJson))).toBe('string');
+describe('test function that compares', () => {
+  test.each([
+    ['before.json', 'after.json', resultDoc],
+    ['before.yml', 'after.yaml', resultDoc],
+    ['before.ini', 'after.ini', resultDoc],
+  ])('compare %s and %s', (file1, file2, expected) => {
+    expect(compare(file1, file2)).toBe(expected);
+  });
 });
 
-test('compare before.yml with after.yaml', () => {
-  const beforeYaml = readFile('before.yml');
-  const afterYaml = readFile('after.yaml');
-  const resultDoc = parse(readFile('comparisonResult.txt'));
-  expect(genDiff(beforeYaml, afterYaml)).toBe(resultDoc);
-  expect(typeof (genDiff(beforeYaml, afterYaml))).toBe('string');
+describe('function always returns string', () => {
+  test.each([
+    ['before.json', 'after.json', 'string'],
+    ['before.yml', 'after.yaml', 'string'],
+    ['before.ini', 'after.ini', 'string'],
+  ])('comparison between %s and %s returns string', (file1, file2, expected) => {
+    expect(typeof compare(file1, file2)).toBe(expected);
+  });
 });
 
 
-test('test parser', () => {
-  const beforeJson = JSON.parse(fs.readFileSync(readFile('before.json'), (data) => data));
+test('test parser function', () => {
+  const beforeJson = JSON.parse(fs.readFileSync(readFile('before.json'), 'utf8'));
   expect(parse(readFile('before.json'))).toStrictEqual(beforeJson);
   expect(typeof parse(readFile('before.json'))).toBe('object');
 });
