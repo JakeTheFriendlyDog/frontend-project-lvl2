@@ -11,31 +11,29 @@ export default (firstConfig, secondConfig) => {
     const keysFromSecondObj = keys(second);
     const onlyUniqueKeys = union(keysFromFirstObj, keysFromSecondObj);
 
-    return onlyUniqueKeys.reduce(((acc, key) => {
+    return onlyUniqueKeys.flatMap(((key) => {
       if (keysFromFirstObj.includes(key) && keysFromSecondObj.includes(key)) {
         // ОБА ОБЪЕКТЫ, ОБА СОВПАДАЮТ
         if (typeof first[key] === 'object' && typeof second[key] === 'object') {
-          return [...acc, {
+          return {
             key,
             type: 'unchanged',
             ancestry,
             value: iter(first[key], second[key], ancestry + 1),
-          },
-          ];
+          };
         }
         // НЕ ОБЪЕКТЫ, КЛЮЧИ И ЗНАЧЕНИЯ ОДИНАКОВЫЕ UNCHANGED
         if (first[key] === second[key]) {
-          return [...acc, {
+          return {
             key,
             type: 'unchanged',
             ancestry,
             value: first[key],
-          },
-          ];
+          };
         }
         // КЛЮЧИ СОВПАДАЮТ НО РАЗНЫЕ ЗНАЧЕНИЯ CHANGED
         // OLD
-        return [...acc, {
+        return [{
           key,
           type: 'deleted',
           ancestry,
@@ -54,23 +52,21 @@ export default (firstConfig, secondConfig) => {
 
       // ЕСТЬ В ПЕРВОМ, НЕТ ВО ВТОРОМ
       if (keysFromFirstObj.includes(key) && !keysFromSecondObj.includes(key)) {
-        return [...acc, {
+        return {
           key,
           type: 'deleted',
           ancestry,
           value: first[key],
-        },
-        ];
+        };
       }
       // ЕСТЬ ВО ВТОРОМ, НЕТ В ПЕРВОМ
-      return [...acc, {
+      return {
         key,
         type: 'changed',
         ancestry,
         value: second[key],
-      },
-      ];
-    }), []);
+      };
+    }));
   };
 
   return iter(firstConfigParsed, secondConfigParsed, 1);
