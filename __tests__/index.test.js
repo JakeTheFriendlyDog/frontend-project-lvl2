@@ -2,13 +2,15 @@ import path from 'path';
 import fs from 'fs';
 import genDiff from '../src/index.js';
 import parse from '../src/parsers.js';
+import stylish from '../src/formatters/stylish.js';
 
 const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', filename);
 const readFile = (filename) => getFixturePath(filename);
 const compare = (pathToFirstFile, pathToSecondFile) => {
   const firstFile = readFile(pathToFirstFile);
   const secondFile = readFile(pathToSecondFile);
-  const result = genDiff(firstFile, secondFile);
+  const ast = genDiff(firstFile, secondFile);
+  const result = stylish(ast);
   return result;
 };
 
@@ -24,7 +26,7 @@ describe('test function that compares', () => {
   });
 });
 
-describe('function always returns string', () => {
+describe('function always returns a string', () => {
   test.each([
     ['before.json', 'after.json', 'string'],
     ['before.yml', 'after.yaml', 'string'],
