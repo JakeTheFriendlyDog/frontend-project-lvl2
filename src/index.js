@@ -2,6 +2,14 @@ import { keys, union } from 'lodash';
 import parse from './parsers.js';
 
 
+const makeNode = (key, type, ancestry, value, oldValue) => ({
+  key,
+  type,
+  ancestry,
+  value,
+  oldValue,
+});
+
 export default (firstConfig, secondConfig) => {
   const firstConfigParsed = parse(firstConfig);
   const secondConfigParsed = parse(secondConfig);
@@ -15,57 +23,24 @@ export default (firstConfig, secondConfig) => {
       if (keysFromFirstObj.includes(key) && keysFromSecondObj.includes(key)) {
         // ОБА ОБЪЕКТЫ, ОБА СОВПАДАЮТ
         if (typeof first[key] === 'object' && typeof second[key] === 'object') {
-          return {
-            key,
-            type: 'unchanged',
-            ancestry,
-            value: iter(first[key], second[key], ancestry + 1),
-          };
+          return makeNode(key, 'unchanged', ancestry, iter(first[key], second[key], ancestry + 1));
         }
         // НЕ ОБЪЕКТЫ, КЛЮЧИ И ЗНАЧЕНИЯ ОДИНАКОВЫЕ UNCHANGED
         if (first[key] === second[key]) {
-          return {
-            key,
-            type: 'unchanged',
-            ancestry,
-            value: first[key],
-          };
+          return makeNode(key, 'unchanged', ancestry, first[key]);
         }
         // КЛЮЧИ СОВПАДАЮТ НО РАЗНЫЕ ЗНАЧЕНИЯ CHANGED
         // OLD
-        return [{
-          key,
-          type: 'deleted',
-          ancestry,
-          value: first[key],
-        },
-        // NEW
-        {
-          key,
-          type: 'changed',
-          ancestry,
-          value: second[key],
-          oldValue: first[key],
-        },
-        ];
+        return [makeNode(key, 'deleted', ancestry, first[key]),
+          makeNode(key, 'changed', ancestry, second[key], first[key])];
       }
 
       // ЕСТЬ В ПЕРВОМ, НЕТ ВО ВТОРОМ
       if (keysFromFirstObj.includes(key) && !keysFromSecondObj.includes(key)) {
-        return {
-          key,
-          type: 'deleted',
-          ancestry,
-          value: first[key],
-        };
+        return makeNode(key, 'deleted', ancestry, first[key]);
       }
       // ЕСТЬ ВО ВТОРОМ, НЕТ В ПЕРВОМ
-      return {
-        key,
-        type: 'changed',
-        ancestry,
-        value: second[key],
-      };
+      return makeNode(key, 'changed', ancestry, second[key]);
     }));
   };
 
