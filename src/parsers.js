@@ -12,8 +12,8 @@ const distinguishNumsInIniParser = (doc) => (mapValues(doc, (n) => {
 
 
 export default (configFile) => {
-  const format = path.extname(path.resolve(configFile));
-  switch (format) {
+  const extension = path.extname(path.resolve(configFile));
+  switch (extension) {
     case '.yaml':
     case '.yml':
       return yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
@@ -22,6 +22,6 @@ export default (configFile) => {
     case '.ini':
       return distinguishNumsInIniParser(ini.parse(fs.readFileSync(configFile, 'utf8')));
     default:
-      return fs.readFileSync(configFile, 'utf8');
+      throw new Error('Unknown extension! Unable to parse!');
   }
 };

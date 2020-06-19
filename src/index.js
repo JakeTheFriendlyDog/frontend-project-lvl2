@@ -17,13 +17,15 @@ const makeNode = (key, type, ancestry, value, parent, oldValue) => ({
 
 const format = (ast, type) => {
   switch (type) {
+    case 'stylish':
+      return stylish(ast);
     case 'plain':
       return plain(ast);
     case 'json':
     case 'JSON':
       return toJSON(ast);
     default:
-      return stylish(ast);
+      throw new Error('Unknown formatter! Unable to format!');
   }
 };
 

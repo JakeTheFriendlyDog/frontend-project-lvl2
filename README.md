@@ -1,4 +1,4 @@
-This CLI utility compares two configuration files and shows a difference.
+This CLI utility compares two configuration files and outputs a difference between them. Supports different type of outputs.
 
 # map-difference
 
