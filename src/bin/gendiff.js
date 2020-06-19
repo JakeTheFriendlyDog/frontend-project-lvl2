@@ -12,7 +12,7 @@ program
   .option('-f --format [type]', 'output format', stylish)
   .arguments('<firstConfig> <secondConfig>')
   .action((firstConfig, secondConfig) => {
-    genDiff(firstConfig, secondConfig);
+    genDiff(firstConfig, secondConfig, program.format);
   });
 
 program.parse(process.argv);

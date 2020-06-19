@@ -68,7 +68,6 @@ export default (ast) => {
 
 
   const array = compact(makeArray(ast));
-  console.log(array);
   const result = [array.flatMap((item) => iter(item, array)).join('\n')];
   return `${result}`;
 };
