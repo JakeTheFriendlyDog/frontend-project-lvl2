@@ -6,6 +6,7 @@ This CLI utility compares two configuration files and shows a difference.
 [![Test Coverage](https://api.codeclimate.com/v1/badges/e344b251e41bc9bd8e2f/test_coverage)](https://codeclimate.com/github/JakeTheFriendlyDog/frontend-project-lvl2/test_coverage)
 ![Node CI](https://github.com/JakeTheFriendlyDog/frontend-project-lvl2/workflows/Node%20CI/badge.svg)
 
+
 ## Setup
 Download package from npm using:
 
@@ -18,11 +19,6 @@ Install it by running:
 $ make install
 ```
 
-## Run tests
-
-```sh
-$ make test
-```
 
 ## Compare JSON files
 [![asciicast](https://asciinema.org/a/U1hEsNtjN1T7DVjJjvU1q09Va.svg)](https://asciinema.org/a/U1hEsNtjN1T7DVjJjvU1q09Va)
@@ -32,3 +28,26 @@ $ make test
 
 ## Compare INI files
 [![asciicast](https://asciinema.org/a/veU1VdO3GsUA53ckRHnLzVrbz.svg)](https://asciinema.org/a/veU1VdO3GsUA53ckRHnLzVrbz)
+
+
+## Supports different output formats
+
+### Plain
+Try it by running:
+```sh
+$ gendiff --format 'plain' fileOne fileTwo
+```
+[![asciicast](https://asciinema.org/a/PTZ2VA2vCKNDP5FTVbTswptph.svg)](https://asciinema.org/a/PTZ2VA2vCKNDP5FTVbTswptph)
+
+### JSON 
+Try it by running:
+```sh
+$ gendiff --format 'json' fileOne fileTwo
+```
+[![asciicast](https://asciinema.org/a/y473QWn90fohshVPJWSwVBZFH.svg)](https://asciinema.org/a/y473QWn90fohshVPJWSwVBZFH)
+
+## Run tests
+
+```sh
+$ make test
+```
