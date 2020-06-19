@@ -1,20 +1,21 @@
 import { isObject, compact } from 'lodash';
 
-const types = [
-  {
-    check: (n) => n === 'changed',
-    process: ({ key, value, oldValue }) => {
-      const newValue = isObject(value) ? '[complex value]' : value;
-      const content = oldValue ? `${key} was changed from ${oldValue} to ${newValue}` : `${key} was added with value: ${newValue}`;
-      return content;
-    },
-  },
-  {
-    check: (n) => n === 'deleted',
-    process: ({ key }) => `${key} was deleted`,
-  },
-];
+const isComplex = (n) => (isObject(n) ? '[complex value]' : n);
 
+
+const makePath = (node, coll) => {
+  const iter = ({ key, ancestry, parent }, arr, path) => {
+    const newPath = [...path, key, parent];
+    if (parent === null || ancestry === 2) {
+      return compact(newPath).join('.');
+    }
+
+    const parentNode = arr.find((n) => n.key === parent);
+    return iter(parentNode, arr, newPath);
+  };
+
+  return iter(node, coll, []);
+};
 
 const values = [
   {
@@ -32,6 +33,21 @@ const values = [
 ];
 
 
+const types = [
+  {
+    check: (n) => n === 'changed',
+    process: ({ key, value, oldValue }) => {
+      const content = oldValue ? `'${key}' was changed from ${isComplex(oldValue)} to ${isComplex(value)}` : `'${key}' was added with value: ${isComplex(value)}`;
+      return content;
+    },
+  },
+  {
+    check: (n) => n === 'deleted',
+    process: (node, coll) => `'${makePath(node, coll)}' was deleted`,
+  },
+];
+
+
 export default (ast) => {
   const makeArray = (tree) => {
     const result = tree.flatMap((node) => {
@@ -40,19 +56,19 @@ export default (ast) => {
       const children = process(node.value, makeArray);
       return [main, children].flat();
     });
+
     return result;
   };
 
-
-  const iter = (node, path) => {
-    const { type, value } = node;
+  const iter = (node, coll) => {
+    const { type } = node;
     const { process } = types.find(({ check }) => check(type));
-    return `Property ${process(node)}`;
+    return `Property ${process(node, coll)}`;
   };
 
 
   const array = compact(makeArray(ast));
   console.log(array);
-  const result = [array.flatMap(iter).join('\n')];
+  const result = [array.flatMap((item) => iter(item, array)).join('\n')];
   return `${result}`;
 };
