@@ -9,7 +9,7 @@ const sym = (type) => {
     case 'deleted':
       return '- ';
     default:
-      throw new Error('Unknown type! Unable to format output as stylish!');
+      throw new Error(`Unknown '${type}'! Unable to format output as stylish!`);
   }
 };
 

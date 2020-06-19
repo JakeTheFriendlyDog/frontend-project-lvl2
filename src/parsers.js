@@ -22,6 +22,6 @@ export default (configFile) => {
     case '.ini':
       return distinguishNumsInIniParser(ini.parse(fs.readFileSync(configFile, 'utf8')));
     default:
-      throw new Error('Unknown extension! Unable to parse!');
+      throw new Error(`Unknown extension: '${extension}' ! Unable to parse '${configFile}'!`);
   }
 };

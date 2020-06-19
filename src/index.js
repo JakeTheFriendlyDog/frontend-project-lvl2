@@ -25,7 +25,7 @@ const format = (ast, type) => {
     case 'JSON':
       return toJSON(ast);
     default:
-      throw new Error('Unknown formatter! Unable to format!');
+      throw new Error(`Unknown formatter: '${type}' ! Unable to format!`);
   }
 };
 
