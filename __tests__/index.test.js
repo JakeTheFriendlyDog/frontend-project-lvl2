@@ -5,6 +5,7 @@ import parse from '../src/parsers.js';
 import stylish from '../src/formatters/stylish.js';
 import plain from '../src/formatters/plain.js';
 
+
 const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', filename);
 const readFile = (filename) => getFixturePath(filename);
 const compare = (pathToFirstFile, pathToSecondFile, format) => {
@@ -15,8 +16,10 @@ const compare = (pathToFirstFile, pathToSecondFile, format) => {
   return result;
 };
 
+
 const resultStylish = parse(readFile('comparisonResult.txt'));
 const resultPlain = parse(readFile('plain.txt'));
+
 
 describe('test stylish formatter', () => {
   test.each([
@@ -27,6 +30,18 @@ describe('test stylish formatter', () => {
     expect(compare(file1, file2, stylish)).toBe(expected);
   });
 });
+
+
+describe('test plain formatter', () => {
+  test.each([
+    ['before.json', 'after.json', resultPlain],
+    ['before.yml', 'after.yaml', resultPlain],
+    ['before.ini', 'after.ini', resultPlain],
+  ])('compare %s and %s', (file1, file2, expected) => {
+    expect(compare(file1, file2, plain)).toBe(expected);
+  });
+});
+
 
 describe('function always returns a string', () => {
   test.each([
@@ -44,17 +59,3 @@ test('test parser function', () => {
   expect(parse(readFile('before.json'))).toStrictEqual(beforeJson);
   expect(typeof parse(readFile('before.json'))).toBe('object');
 });
-
-describe('test plain formatter', () => {
-  test.each([
-    ['before.json', 'after.json', resultPlain],
-    ['before.yml', 'after.yaml', resultPlain],
-    ['before.ini', 'after.ini', resultPlain],
-  ])('compare %s and %s', (file1, file2, expected) => {
-    expect(compare(file1, file2, plain)).toBe(expected);
-  });
-});
-
-// test default is stylish
-// test plain formatter
-//
