@@ -1,5 +1,6 @@
 import { keys, union } from 'lodash';
 import parse from './parsers.js';
+import format from './formatters/format.js';
 
 
 const makeNode = (key, type, ancestry, value, parent, oldValue) => ({
@@ -11,7 +12,7 @@ const makeNode = (key, type, ancestry, value, parent, oldValue) => ({
   oldValue,
 });
 
-export default (firstConfig, secondConfig) => {
+export default (firstConfig, secondConfig, chosenFormat) => {
   const firstConfigParsed = parse(firstConfig);
   const secondConfigParsed = parse(secondConfig);
 
@@ -39,5 +40,7 @@ export default (firstConfig, secondConfig) => {
     }));
   };
 
-  return iter(firstConfigParsed, secondConfigParsed, 1);
+  const ast = iter(firstConfigParsed, secondConfigParsed, 1);
+  const formattedResult = format(ast, chosenFormat);
+  return formattedResult;
 };

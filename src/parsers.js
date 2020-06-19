@@ -8,26 +8,20 @@ import fs from 'fs';
 const distinguishNumsInIniParser = (doc) => (mapValues(doc, (n) => {
   const newValue = isObject(n) ? distinguishNumsInIniParser(n) : parseInt(n, 10) || n;
   return newValue;
-})
-);
+}));
 
 
 export default (configFile) => {
   const format = path.extname(path.resolve(configFile));
-  let doc;
   switch (format) {
     case '.yaml':
     case '.yml':
-      doc = yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
-      break;
+      return yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
     case '.json':
-      doc = JSON.parse(fs.readFileSync(configFile, 'utf8'));
-      break;
+      return JSON.parse(fs.readFileSync(configFile, 'utf8'));
     case '.ini':
-      doc = distinguishNumsInIniParser(ini.parse(fs.readFileSync(configFile, 'utf8')));
-      break;
+      return distinguishNumsInIniParser(ini.parse(fs.readFileSync(configFile, 'utf8')));
     default:
-      doc = fs.readFileSync(configFile, 'utf8');
+      return fs.readFileSync(configFile, 'utf8');
   }
-  return doc;
 };

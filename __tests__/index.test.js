@@ -2,18 +2,14 @@ import path from 'path';
 import fs from 'fs';
 import genDiff from '../src/index.js';
 import parse from '../src/parsers.js';
-import stylish from '../src/formatters/stylish.js';
-import plain from '../src/formatters/plain.js';
-import toJson from '../src/formatters/toJson.js';
 
 
 const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', filename);
 const readFile = (filename) => getFixturePath(filename);
-const compare = (pathToFirstFile, pathToSecondFile, format) => {
+const compare = (pathToFirstFile, pathToSecondFile, chosenFormat) => {
   const firstFile = readFile(pathToFirstFile);
   const secondFile = readFile(pathToSecondFile);
-  const ast = genDiff(firstFile, secondFile);
-  const result = format(ast);
+  const result = genDiff(firstFile, secondFile, chosenFormat);
   return result;
 };
 
@@ -29,7 +25,7 @@ describe('test stylish formatter', () => {
     ['before.yml', 'after.yaml', resultStylish],
     ['before.ini', 'after.ini', resultStylish],
   ])('compare %s and %s', (file1, file2, expected) => {
-    expect(compare(file1, file2, stylish)).toBe(expected);
+    expect(compare(file1, file2, 'stylish')).toBe(expected);
   });
 });
 
@@ -40,7 +36,7 @@ describe('test plain formatter', () => {
     ['before.yml', 'after.yaml', resultPlain],
     ['before.ini', 'after.ini', resultPlain],
   ])('compare %s and %s', (file1, file2, expected) => {
-    expect(compare(file1, file2, plain)).toBe(expected);
+    expect(compare(file1, file2, 'plain')).toBe(expected);
   });
 });
 
@@ -50,7 +46,7 @@ describe('test to JSON formatter', () => {
     ['before.yml', 'after.yaml', resultToJson],
     ['before.ini', 'after.ini', resultToJson],
   ])('compare %s and %s', (file1, file2, expected) => {
-    expect(compare(file1, file2, toJson)).toBe(expected);
+    expect(compare(file1, file2, 'toJson')).toBe(expected);
   });
 });
 
@@ -60,7 +56,7 @@ describe('function always returns a string', () => {
     ['before.yml', 'after.yaml', 'string'],
     ['before.ini', 'after.ini', 'string'],
   ])('comparison between %s and %s returns string', (file1, file2, expected) => {
-    expect(typeof compare(file1, file2, stylish)).toBe(expected);
+    expect(typeof compare(file1, file2)).toBe(expected);
   });
 });
 
