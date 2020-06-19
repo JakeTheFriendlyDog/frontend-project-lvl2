@@ -4,6 +4,7 @@ import genDiff from '../src/index.js';
 import parse from '../src/parsers.js';
 import stylish from '../src/formatters/stylish.js';
 import plain from '../src/formatters/plain.js';
+import toJson from '../src/formatters/toJson.js';
 
 
 const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', filename);
@@ -17,8 +18,9 @@ const compare = (pathToFirstFile, pathToSecondFile, format) => {
 };
 
 
-const resultStylish = parse(readFile('comparisonResult.txt'));
+const resultStylish = parse(readFile('stylish.txt'));
 const resultPlain = parse(readFile('plain.txt'));
+const resultToJson = parse(readFile('toJson.txt'));
 
 
 describe('test stylish formatter', () => {
@@ -42,6 +44,15 @@ describe('test plain formatter', () => {
   });
 });
 
+describe('test to JSON formatter', () => {
+  test.each([
+    ['before.json', 'after.json', resultToJson],
+    ['before.yml', 'after.yaml', resultToJson],
+    ['before.ini', 'after.ini', resultToJson],
+  ])('compare %s and %s', (file1, file2, expected) => {
+    expect(compare(file1, file2, toJson)).toBe(expected);
+  });
+});
 
 describe('function always returns a string', () => {
   test.each([
