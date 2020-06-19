@@ -46,7 +46,7 @@ describe('test to JSON formatter', () => {
     ['before.yml', 'after.yaml', resultToJson],
     ['before.ini', 'after.ini', resultToJson],
   ])('compare %s and %s', (file1, file2, expected) => {
-    expect(compare(file1, file2, 'toJson')).toBe(expected);
+    expect(compare(file1, file2, 'json')).toBe(expected);
   });
 });
 

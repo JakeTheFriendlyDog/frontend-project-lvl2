@@ -1,6 +1,8 @@
 import { keys, union } from 'lodash';
 import parse from './parsers.js';
-import format from './formatters/format.js';
+import stylish from './formatters/stylish.js';
+import plain from './formatters/plain.js';
+import toJSON from './formatters/toJSON.js';
 
 
 const makeNode = (key, type, ancestry, value, parent, oldValue) => ({
@@ -11,6 +13,20 @@ const makeNode = (key, type, ancestry, value, parent, oldValue) => ({
   parent,
   oldValue,
 });
+
+
+const format = (ast, type) => {
+  switch (type) {
+    case 'plain':
+      return plain(ast);
+    case 'json':
+    case 'JSON':
+      return toJSON(ast);
+    default:
+      return stylish(ast);
+  }
+};
+
 
 export default (firstConfig, secondConfig, chosenFormat) => {
   const firstConfigParsed = parse(firstConfig);
