@@ -5,16 +5,6 @@ import plain from './formatters/plain.js';
 import toJSON from './formatters/toJSON.js';
 
 
-const makeNode = (key, type, ancestry, value, parent, oldValue) => ({
-  key,
-  type,
-  ancestry,
-  value,
-  parent,
-  oldValue,
-});
-
-
 const format = (ast, type) => {
   switch (type) {
     case 'stylish':
@@ -30,6 +20,16 @@ const format = (ast, type) => {
 };
 
 
+const makeNode = (key, type, ancestry, value, parent, oldValue) => ({
+  key,
+  type,
+  ancestry,
+  value,
+  parent,
+  oldValue,
+});
+
+
 export default (chosenFormat, ...configs) => {
   const parsedConfigs = configs.map(parse);
 
@@ -41,7 +41,8 @@ export default (chosenFormat, ...configs) => {
     return onlyUniqueKeys.flatMap(((key) => {
       if (keysFromFirstObj.includes(key) && keysFromSecondObj.includes(key)) {
         if (typeof first[key] === 'object' && typeof second[key] === 'object') {
-          return makeNode(key, 'unchanged', ancestry, iter(first[key], second[key], ancestry + 1, key), parent);
+          const children = iter(first[key], second[key], ancestry + 1, key);
+          return makeNode(key, 'unchanged', ancestry, children, parent);
         }
         if (first[key] === second[key]) {
           return makeNode(key, 'unchanged', ancestry, first[key], parent);
