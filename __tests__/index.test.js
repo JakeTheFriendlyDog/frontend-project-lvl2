@@ -19,34 +19,13 @@ const resultPlain = parse(readFile('plain.txt'));
 const resultToJson = parse(readFile('toJson.txt'));
 
 
-describe('test stylish formatter', () => {
+describe('test formatters', () => {
   test.each([
-    ['before.json', 'after.json', resultStylish],
-    ['before.yml', 'after.yaml', resultStylish],
-    ['before.ini', 'after.ini', resultStylish],
-  ])('compare %s and %s', (file1, file2, expected) => {
-    expect(compare(file1, file2, 'stylish')).toBe(expected);
-  });
-});
-
-
-describe('test plain formatter', () => {
-  test.each([
-    ['before.json', 'after.json', resultPlain],
-    ['before.yml', 'after.yaml', resultPlain],
-    ['before.ini', 'after.ini', resultPlain],
-  ])('compare %s and %s', (file1, file2, expected) => {
-    expect(compare(file1, file2, 'plain')).toBe(expected);
-  });
-});
-
-describe('test to JSON formatter', () => {
-  test.each([
-    ['before.json', 'after.json', resultToJson],
-    ['before.yml', 'after.yaml', resultToJson],
-    ['before.ini', 'after.ini', resultToJson],
-  ])('compare %s and %s', (file1, file2, expected) => {
-    expect(compare(file1, file2, 'json')).toBe(expected);
+    ['before.json', 'after.json', 'stylish', resultStylish],
+    ['before.yml', 'after.yaml', 'plain', resultPlain],
+    ['before.ini', 'after.ini', 'json', resultToJson],
+  ])('compare %s and %s', (file1, file2, format, expected) => {
+    expect(compare(file1, file2, format)).toBe(expected);
   });
 });
 
