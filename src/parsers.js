@@ -21,6 +21,8 @@ export default (configFile) => {
       return JSON.parse(fs.readFileSync(configFile, 'utf8'));
     case '.ini':
       return distinguishNumsInIniParser(ini.parse(fs.readFileSync(configFile, 'utf8')));
+    case '.txt':
+      return fs.readFileSync(configFile, 'utf8');
     default:
       throw new Error(`Unknown extension: '${extension}' ! Unable to parse '${configFile}'!`);
   }

@@ -56,7 +56,7 @@ describe('function always returns a string', () => {
     ['before.yml', 'after.yaml', 'string'],
     ['before.ini', 'after.ini', 'string'],
   ])('comparison between %s and %s returns string', (file1, file2, expected) => {
-    expect(typeof compare(file1, file2)).toBe(expected);
+    expect(typeof compare(file1, file2, 'stylish')).toBe(expected);
   });
 });
 
