@@ -17,21 +17,6 @@ const makePath = (node, coll) => {
   return iter(node, coll, []);
 };
 
-const values = [
-  {
-    check: (n) => Array.isArray(n),
-    process: (n, f) => f(n),
-  },
-  {
-    check: (n) => isObject(n),
-    process: () => null,
-  },
-  {
-    check: (n) => !isObject(n),
-    process: () => null,
-  },
-];
-
 
 const types = [
   {
@@ -47,27 +32,23 @@ const types = [
   },
 ];
 
+const makeLine = (node, coll) => {
+  const { type } = node;
+  const { process } = types.find(({ check }) => check(type));
+  return `Property ${process(node, coll)}`;
+};
+
+const makeArray = (tree) => {
+  const result = tree.flatMap((node) => {
+    const main = node.type === 'unchanged' ? null : node;
+    const children = Array.isArray(node.value) ? makeArray(node.value) : null;
+    return [main, children].flat();
+  });
+  return result;
+};
 
 export default (ast) => {
-  const makeArray = (tree) => {
-    const result = tree.flatMap((node) => {
-      const { process } = values.find(({ check }) => check(node.value));
-      const main = node.type === 'unchanged' ? null : node;
-      const children = process(node.value, makeArray);
-      return [main, children].flat();
-    });
-
-    return result;
-  };
-
-  const iter = (node, coll) => {
-    const { type } = node;
-    const { process } = types.find(({ check }) => check(type));
-    return `Property ${process(node, coll)}`;
-  };
-
-
-  const array = compact(makeArray(ast));
-  const result = [array.flatMap((item) => iter(item, array)).join('\n')];
-  return `${result}`;
+  const compactedNewColl = compact(makeArray(ast));
+  const formatted = [compactedNewColl.flatMap((item) => makeLine(item, compactedNewColl)).join('\n')];
+  return `${formatted}`;
 };

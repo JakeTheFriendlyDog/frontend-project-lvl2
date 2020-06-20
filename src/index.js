@@ -30,11 +30,10 @@ const format = (ast, type) => {
 };
 
 
-export default (firstConfig, secondConfig, chosenFormat) => {
-  const firstConfigParsed = parse(firstConfig);
-  const secondConfigParsed = parse(secondConfig);
+export default (chosenFormat, ...configs) => {
+  const parsedConfigs = configs.map(parse);
 
-  const iter = (first, second, ancestry, parent = null) => {
+  const iter = (first, second, ancestry = 1, parent = null) => {
     const keysFromFirstObj = keys(first);
     const keysFromSecondObj = keys(second);
     const onlyUniqueKeys = union(keysFromFirstObj, keysFromSecondObj);
@@ -58,7 +57,7 @@ export default (firstConfig, secondConfig, chosenFormat) => {
     }));
   };
 
-  const ast = iter(firstConfigParsed, secondConfigParsed, 1);
+  const ast = iter(...parsedConfigs);
   const formattedResult = format(ast, chosenFormat);
   return formattedResult;
 };

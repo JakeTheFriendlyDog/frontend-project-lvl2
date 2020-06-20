@@ -11,8 +11,7 @@ program
   .option('-f --format [type]', 'output format', 'stylish')
   .arguments('<firstConfig> <secondConfig>')
   .action((firstConfig, secondConfig) => {
-    genDiff(firstConfig, secondConfig, program.format);
-    console.log(genDiff(firstConfig, secondConfig, program.format));
+    console.log(genDiff(program.format, firstConfig, secondConfig));
   });
 
 program.parse(process.argv);
