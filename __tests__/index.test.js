@@ -6,7 +6,7 @@ import parse from '../src/parsers.js';
 
 const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', filename);
 const readFile = (filename) => getFixturePath(filename);
-const compare = (pathToFirstFile, pathToSecondFile, chosenFormat) => {
+const compareFiles = (pathToFirstFile, pathToSecondFile, chosenFormat) => {
   const firstFile = readFile(pathToFirstFile);
   const secondFile = readFile(pathToSecondFile);
   const result = genDiff(chosenFormat, firstFile, secondFile);
@@ -14,28 +14,28 @@ const compare = (pathToFirstFile, pathToSecondFile, chosenFormat) => {
 };
 
 
-const resultStylish = parse(readFile('stylish.txt'));
-const resultPlain = parse(readFile('plain.txt'));
-const resultToJson = parse(readFile('toJson.txt'));
+const stylishResult = parse(readFile('stylish.txt'));
+const plainResult = parse(readFile('plain.txt'));
+const toJSONresult = parse(readFile('toJSON.txt'));
 
 
-describe('test formatters', () => {
+describe('test all formatters', () => {
   test.each([
-    ['before.json', 'after.json', 'stylish', resultStylish],
-    ['before.yml', 'after.yaml', 'plain', resultPlain],
-    ['before.ini', 'after.ini', 'json', resultToJson],
+    ['before.json', 'after.json', 'stylish', stylishResult],
+    ['before.yml', 'after.yaml', 'plain', plainResult],
+    ['before.ini', 'after.ini', 'json', toJSONresult],
   ])('compare %s and %s', (file1, file2, format, expected) => {
-    expect(compare(file1, file2, format)).toBe(expected);
+    expect(compareFiles(file1, file2, format)).toBe(expected);
   });
 });
 
-describe('function always returns a string', () => {
+describe('compare function always returns a string', () => {
   test.each([
     ['before.json', 'after.json', 'string'],
     ['before.yml', 'after.yaml', 'string'],
     ['before.ini', 'after.ini', 'string'],
   ])('comparison between %s and %s returns string', (file1, file2, expected) => {
-    expect(typeof compare(file1, file2, 'stylish')).toBe(expected);
+    expect(typeof compareFiles(file1, file2, 'stylish')).toBe(expected);
   });
 });
 

@@ -1,6 +1,6 @@
 import { isObject, identity } from 'lodash';
 
-const sym = (type) => {
+const chooseSymbol = (type) => {
   switch (type) {
     case 'unchanged':
       return '  ';
@@ -34,7 +34,7 @@ const actions = [
 ];
 
 export default (ast) => {
-  const iter = (node) => {
+  const makeNode = (node) => {
     const {
       key,
       type,
@@ -42,7 +42,7 @@ export default (ast) => {
       value,
     } = node;
     const { process } = actions.find(({ check }) => check(value));
-    return `\n${indent(ancestry)}${sym(type)}${key}: ${process(value, iter, node)}`;
+    return `\n${indent(ancestry)}${chooseSymbol(type)}${key}: ${process(value, makeNode, node)}`;
   };
-  return `{${ast.map(iter).join('')}\n}`;
+  return `{${ast.map(makeNode).join('')}\n}`;
 };

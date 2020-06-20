@@ -18,7 +18,7 @@ const makePath = (node, coll) => {
 };
 
 
-const types = [
+const nodeTypes = [
   {
     check: (n) => n === 'changed',
     process: ({ key, value, oldValue }) => {
@@ -34,12 +34,12 @@ const types = [
 
 const makeLine = (node, coll) => {
   const { type } = node;
-  const { process } = types.find(({ check }) => check(type));
+  const { process } = nodeTypes.find(({ check }) => check(type));
   return `Property ${process(node, coll)}`;
 };
 
-const makeArray = (tree) => {
-  const result = tree.flatMap((node) => {
+const makeArray = (ast) => {
+  const result = ast.flatMap((node) => {
     const main = node.type === 'unchanged' ? null : node;
     const children = Array.isArray(node.value) ? makeArray(node.value) : null;
     return [main, children].flat();
@@ -49,6 +49,6 @@ const makeArray = (tree) => {
 
 export default (ast) => {
   const compactedNewColl = compact(makeArray(ast));
-  const formatted = [compactedNewColl.flatMap((item) => makeLine(item, compactedNewColl)).join('\n')];
-  return `${formatted}`;
+  const formattedColl = compactedNewColl.flatMap((item) => makeLine(item, compactedNewColl)).join('\n');
+  return formattedColl;
 };

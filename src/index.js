@@ -1,16 +1,16 @@
 import { keys, union } from 'lodash';
 import parse from './parsers.js';
-import stylish from './formatters/stylish.js';
-import plain from './formatters/plain.js';
+import makeStylish from './formatters/stylish.js';
+import makePlain from './formatters/plain.js';
 import toJSON from './formatters/toJSON.js';
 
 
 const format = (ast, type) => {
   switch (type) {
     case 'stylish':
-      return stylish(ast);
+      return makeStylish(ast);
     case 'plain':
-      return plain(ast);
+      return makePlain(ast);
     case 'json':
     case 'JSON':
       return toJSON(ast);
