@@ -11,19 +11,19 @@ const distinguishNumsInIniParser = (doc) => (mapValues(doc, (n) => {
 }));
 
 
-export default (configFile) => {
-  const fileExtension = path.extname(path.resolve(configFile));
+export default (filePath) => {
+  const fileExtension = path.extname(path.resolve(filePath));
   switch (fileExtension) {
     case '.yaml':
     case '.yml':
-      return yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
+      return yaml.safeLoad(fs.readFileSync(filePath, 'utf8'));
     case '.json':
-      return JSON.parse(fs.readFileSync(configFile, 'utf8'));
+      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
     case '.ini':
-      return distinguishNumsInIniParser(ini.parse(fs.readFileSync(configFile, 'utf8')));
+      return distinguishNumsInIniParser(ini.parse(fs.readFileSync(filePath, 'utf8')));
     case '.txt':
-      return fs.readFileSync(configFile, 'utf8');
+      return fs.readFileSync(filePath, 'utf8');
     default:
-      throw new Error(`Unknown extension: '${fileExtension}' ! Unable to parse '${configFile}'!`);
+      throw new Error(`Unknown extension: '${fileExtension}' ! Unable to parse '${filePath}'!`);
   }
 };

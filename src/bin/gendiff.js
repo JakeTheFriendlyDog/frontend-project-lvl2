@@ -10,8 +10,8 @@ program
 program
   .option('-f --format [type]', 'output format', 'stylish')
   .arguments('<firstConfig> <secondConfig>')
-  .action((pathTofirstConfig, pathTosecondConfig) => {
-    console.log(genDiff(program.format, pathTofirstConfig, pathTosecondConfig));
+  .action((pathToFirstFile, pathToSecondFile) => {
+    console.log(genDiff(pathToFirstFile, pathToSecondFile, program.format));
   });
 
 program.parse(process.argv);

@@ -9,7 +9,7 @@ const readFile = (filename) => getFixturePath(filename);
 const compareFiles = (pathToFirstFile, pathToSecondFile, chosenFormat) => {
   const firstFile = readFile(pathToFirstFile);
   const secondFile = readFile(pathToSecondFile);
-  const output = genDiff(chosenFormat, firstFile, secondFile);
+  const output = genDiff(firstFile, secondFile, chosenFormat);
   return output;
 };
 

@@ -30,9 +30,7 @@ const makeNode = (key, type, ancestry, value, parent, oldValue) => ({
 });
 
 
-export default (chosenFormat, ...configs) => {
-  const parsedConfigs = configs.map(parse);
-
+const genDiff = (firstFile, secondFile) => {
   const iter = (first, second, ancestry = 1, parent = null) => {
     const keysFromFirstObj = keys(first);
     const keysFromSecondObj = keys(second);
@@ -58,7 +56,15 @@ export default (chosenFormat, ...configs) => {
     }));
   };
 
-  const ast = iter(...parsedConfigs);
-  const formattedResult = format(ast, chosenFormat);
-  return formattedResult;
+  const ast = iter(firstFile, secondFile);
+  return ast;
+};
+
+
+export default (pathToFirstFile, pathToSecondFile, chosenFormat) => {
+  const firstFileParsed = parse(pathToFirstFile);
+  const secondFileParsed = parse(pathToSecondFile);
+  const ast = genDiff(firstFileParsed, secondFileParsed);
+  const formattedDifference = format(ast, chosenFormat);
+  return formattedDifference;
 };
