@@ -1,23 +1,6 @@
 import { keys, union } from 'lodash';
 import parse from './parsers.js';
-import makeStylish from './formatters/stylish.js';
-import makePlain from './formatters/plain.js';
-import toJSON from './formatters/toJSON.js';
-
-
-const format = (ast, type) => {
-  switch (type) {
-    case 'stylish':
-      return makeStylish(ast);
-    case 'plain':
-      return makePlain(ast);
-    case 'json':
-    case 'JSON':
-      return toJSON(ast);
-    default:
-      throw new Error(`Unknown formatter: '${type}' ! Unable to format!`);
-  }
-};
+import format from './formatters/index.js';
 
 
 const makeNode = (key, type, ancestry, value, parent, oldValue) => ({

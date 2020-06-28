@@ -9,8 +9,8 @@ const readFile = (filename) => getFixturePath(filename);
 const compareFiles = (pathToFirstFile, pathToSecondFile, chosenFormat) => {
   const firstFile = readFile(pathToFirstFile);
   const secondFile = readFile(pathToSecondFile);
-  const output = genDiff(firstFile, secondFile, chosenFormat);
-  return output;
+  const difference = genDiff(firstFile, secondFile, chosenFormat);
+  return difference;
 };
 
 
@@ -24,8 +24,8 @@ describe('test all formatters', () => {
     ['before.json', 'after.json', 'stylish', stylishResult],
     ['before.yml', 'after.yaml', 'plain', plainResult],
     ['before.ini', 'after.ini', 'json', toJSONresult],
-  ])('compare %s and %s', (file1, file2, format, expected) => {
-    expect(compareFiles(file1, file2, format)).toBe(expected);
+  ])('compare %s and %s', (pathToFirstFile, pathToSecondFile, format, expected) => {
+    expect(compareFiles(pathToFirstFile, pathToSecondFile, format)).toBe(expected);
   });
 });
 
@@ -34,14 +34,14 @@ describe('compare function always returns a string', () => {
     ['before.json', 'after.json', 'string'],
     ['before.yml', 'after.yaml', 'string'],
     ['before.ini', 'after.ini', 'string'],
-  ])('comparison between %s and %s returns string', (file1, file2, expected) => {
-    expect(typeof compareFiles(file1, file2, 'stylish')).toBe(expected);
+  ])('comparison between %s and %s returns string', (pathToFirstFile, pathToSecondFile, expected) => {
+    expect(typeof compareFiles(pathToFirstFile, pathToSecondFile, 'stylish')).toBe(expected);
   });
 });
 
 
 test('test parser function', () => {
-  const beforeJson = JSON.parse(fs.readFileSync(readFile('before.json'), 'utf8'));
-  expect(parse(readFile('before.json'))).toStrictEqual(beforeJson);
+  const parsedJSONfile = JSON.parse(fs.readFileSync(readFile('before.json'), 'utf8'));
+  expect(parse(readFile('before.json'))).toStrictEqual(parsedJSONfile);
   expect(typeof parse(readFile('before.json'))).toBe('object');
 });
