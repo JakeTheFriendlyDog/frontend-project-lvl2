@@ -12,19 +12,20 @@ const distinguishNumsInIniParser = (doc) => (
   ))
 );
 
+const readFile = (filePath) => fs.readFileSync(filePath, 'utf8');
 
 export default (filePath) => {
   const fileExtension = path.extname(path.resolve(filePath));
   switch (fileExtension) {
     case '.yaml':
     case '.yml':
-      return yaml.safeLoad(fs.readFileSync(filePath, 'utf8'));
+      return yaml.safeLoad(readFile(filePath));
     case '.json':
-      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      return JSON.parse(readFile(filePath));
     case '.ini':
-      return distinguishNumsInIniParser(ini.parse(fs.readFileSync(filePath, 'utf8')));
+      return distinguishNumsInIniParser(ini.parse(readFile(filePath)));
     case '.txt':
-      return fs.readFileSync(filePath, 'utf8');
+      return readFile(filePath);
     default:
       throw new Error(`Unknown extension: '${fileExtension}' ! Unable to parse '${filePath}'!`);
   }
