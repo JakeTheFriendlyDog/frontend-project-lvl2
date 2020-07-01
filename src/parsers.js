@@ -5,28 +5,28 @@ import path from 'path';
 import fs from 'fs';
 
 
-const distinguishNumsInIniParser = (doc) => (
-  mapValues(doc, (n) => (
+const distinguishNumsInIniParser = (content) => (
+  mapValues(content, (n) => (
     isObject(n) ? distinguishNumsInIniParser(n)
       : parseInt(n, 10) || n
   ))
 );
 
-const readFile = (filePath) => fs.readFileSync(filePath, 'utf8');
+const readFile = (filepath) => fs.readFileSync(filepath, 'utf8');
 
-export default (filePath) => {
-  const fileExtension = path.extname(path.resolve(filePath));
+export default (filepath) => {
+  const fileExtension = path.extname(path.resolve(filepath));
   switch (fileExtension) {
     case '.yaml':
     case '.yml':
-      return yaml.safeLoad(readFile(filePath));
+      return yaml.safeLoad(readFile(filepath));
     case '.json':
-      return JSON.parse(readFile(filePath));
+      return JSON.parse(readFile(filepath));
     case '.ini':
-      return distinguishNumsInIniParser(ini.parse(readFile(filePath)));
+      return distinguishNumsInIniParser(ini.parse(readFile(filepath)));
     case '.txt':
-      return readFile(filePath);
+      return readFile(filepath);
     default:
-      throw new Error(`Unknown extension: '${fileExtension}' ! Unable to parse '${filePath}'!`);
+      throw new Error(`Unknown extension: '${fileExtension}' ! Unable to parse '${filepath}'!`);
   }
 };

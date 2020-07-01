@@ -17,7 +17,7 @@ const genDiff = (firstFile, secondFile) => {
   const iter = (first, second, ancestry = 1, parent = null) => {
     const keysFromFirstObj = keys(first);
     const keysFromSecondObj = keys(second);
-    const onlyUniqueKeys = union(keysFromFirstObj, keysFromSecondObj);
+    const onlyUniqueKeys = union(keys(first), keysFromSecondObj);
 
     return onlyUniqueKeys.flatMap(((key) => {
       if (keysFromFirstObj.includes(key) && keysFromSecondObj.includes(key)) {

@@ -1,13 +1,13 @@
-import makeStylish from './stylish.js';
-import makePlain from './plain.js';
+import formatStylish from './stylish.js';
+import formatPlain from './plain.js';
 import toJSON from './toJSON.js';
 
 export default (ast, type) => {
   switch (type) {
     case 'stylish':
-      return makeStylish(ast);
+      return formatStylish(ast);
     case 'plain':
-      return makePlain(ast);
+      return formatPlain(ast);
     case 'json':
     case 'JSON':
       return toJSON(ast);
