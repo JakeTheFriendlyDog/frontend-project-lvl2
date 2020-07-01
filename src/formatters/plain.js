@@ -1,6 +1,6 @@
 import { isObject, compact } from 'lodash';
 
-const isComplex = (n) => (isObject(n) ? '[complex value]' : n);
+const formatObject = (n) => (isObject(n) ? '[complex value]' : n);
 
 
 const makePath = (node, coll) => {
@@ -22,7 +22,7 @@ const nodeTypes = [
   {
     check: (n) => n === 'changed',
     process: ({ key, value, oldValue }) => {
-      const content = oldValue ? `'${key}' was changed from ${isComplex(oldValue)} to ${isComplex(value)}` : `'${key}' was added with value: ${isComplex(value)}`;
+      const content = oldValue ? `'${key}' was changed from ${formatObject(oldValue)} to ${formatObject(value)}` : `'${key}' was added with value: ${formatObject(value)}`;
       return content;
     },
   },

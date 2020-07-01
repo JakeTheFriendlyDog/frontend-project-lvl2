@@ -5,10 +5,12 @@ import path from 'path';
 import fs from 'fs';
 
 
-const distinguishNumsInIniParser = (doc) => (mapValues(doc, (n) => {
-  const newValue = isObject(n) ? distinguishNumsInIniParser(n) : parseInt(n, 10) || n;
-  return newValue;
-}));
+const distinguishNumsInIniParser = (doc) => (
+  mapValues(doc, (n) => (
+    isObject(n) ? distinguishNumsInIniParser(n)
+      : parseInt(n, 10) || n
+  ))
+);
 
 
 export default (filePath) => {
