@@ -3,21 +3,21 @@ import parse from './parsers.js';
 import format from './formatters/index.js';
 
 
-const makeNode = (key, type, ancestry, value, parent, oldValue) => ({
+const makeNode = (key, type, ancestry, beforeValue, parent, afterValue) => ({
   key,
   type,
   ancestry,
-  value,
+  beforeValue,
   parent,
-  oldValue,
+  afterValue,
 });
 
 
-const genDiff = (firstFile, secondFile) => {
+const buildAST = (firstFile, secondFile) => {
   const iter = (first, second, ancestry = 1, parent = null) => {
     const keysFromFirstObj = keys(first);
     const keysFromSecondObj = keys(second);
-    const onlyUniqueKeys = union(keys(first), keysFromSecondObj);
+    const onlyUniqueKeys = union(keysFromFirstObj, keysFromSecondObj);
 
     return onlyUniqueKeys.flatMap(((key) => {
       if (keysFromFirstObj.includes(key) && keysFromSecondObj.includes(key)) {
@@ -47,7 +47,7 @@ const genDiff = (firstFile, secondFile) => {
 export default (pathToFirstFile, pathToSecondFile, chosenFormat) => {
   const firstFileParsed = parse(pathToFirstFile);
   const secondFileParsed = parse(pathToSecondFile);
-  const ast = genDiff(firstFileParsed, secondFileParsed);
+  const ast = buildAST(firstFileParsed, secondFileParsed);
   const formattedDifference = format(ast, chosenFormat);
   return formattedDifference;
 };

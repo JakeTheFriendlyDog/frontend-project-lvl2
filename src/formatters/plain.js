@@ -3,7 +3,7 @@ import { isObject, compact } from 'lodash';
 const valueToString = (n) => (isObject(n) ? '[complex value]' : n);
 
 
-const makePath = (node, coll) => {
+const makePathToNode = (node, coll) => {
   const iter = ({ key, ancestry, parent }, arr, path) => {
     const newPath = [...path, key, parent];
     if (parent === null || ancestry === 2) {
@@ -21,34 +21,34 @@ const makePath = (node, coll) => {
 const nodeTypes = [
   {
     check: (n) => n === 'changed',
-    process: ({ key, value, oldValue }) => {
-      const content = oldValue ? `'${key}' was changed from ${valueToString(oldValue)} to ${valueToString(value)}` : `'${key}' was added with value: ${valueToString(value)}`;
+    process: ({ key, beforeValue, afterValue }) => {
+      const content = afterValue ? `'${key}' was changed from ${valueToString(afterValue)} to ${valueToString(beforeValue)}` : `'${key}' was added with value: ${valueToString(beforeValue)}`;
       return content;
     },
   },
   {
     check: (n) => n === 'deleted',
-    process: (node, coll) => `'${makePath(node, coll)}' was deleted`,
+    process: (node, coll) => `'${makePathToNode(node, coll)}' was deleted`,
   },
 ];
 
-const makeLine = (node, coll) => {
+const formatOutputLine = (node, coll) => {
   const { type } = node;
   const { process } = nodeTypes.find(({ check }) => check(type));
   return `Property ${process(node, coll)}`;
 };
 
-const makeArray = (ast) => {
+const astToArray = (ast) => {
   const result = ast.flatMap((node) => {
     const main = node.type === 'unchanged' ? null : node;
-    const children = Array.isArray(node.value) ? makeArray(node.value) : null;
+    const children = Array.isArray(node.beforeValue) ? astToArray(node.beforeValue) : null;
     return [main, children].flat();
   });
   return result;
 };
 
 export default (ast) => {
-  const compactedNewColl = compact(makeArray(ast));
-  const formattedColl = compactedNewColl.flatMap((item) => makeLine(item, compactedNewColl)).join('\n');
-  return formattedColl;
+  const outputLines = compact(astToArray(ast));
+  const formattedOutput = outputLines.flatMap((item) => formatOutputLine(item, outputLines)).join('\n');
+  return formattedOutput;
 };

@@ -39,10 +39,10 @@ export default (ast) => {
       key,
       type,
       ancestry,
-      value,
+      beforeValue,
     } = node;
-    const { process } = actions.find(({ check }) => check(value));
-    return `\n${indent(ancestry)}${chooseSymbol(type)}${key}: ${process(value, makeNode, node)}`;
+    const { process } = actions.find(({ check }) => check(beforeValue));
+    return `\n${indent(ancestry)}${chooseSymbol(type)}${key}: ${process(beforeValue, makeNode, node)}`;
   };
   return `{${ast.map(makeNode).join('')}\n}`;
 };
