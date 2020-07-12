@@ -24,8 +24,6 @@ export default (filepath) => {
       return JSON.parse(readFile(filepath));
     case '.ini':
       return distinguishNumsInIniParser(ini.parse(readFile(filepath)));
-    case '.txt':
-      return readFile(filepath);
     default:
       throw new Error(`Unknown extension: '${fileExtension}' ! Unable to parse '${filepath}'!`);
   }

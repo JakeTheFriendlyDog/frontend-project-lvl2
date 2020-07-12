@@ -14,9 +14,9 @@ const compareFiles = (pathToFirstFile, pathToSecondFile, chosenFormat) => {
 };
 
 
-const stylishResult = parse(readFile('stylish.txt'));
-const plainResult = parse(readFile('plain.txt'));
-const toJSONresult = parse(readFile('toJSON.txt'));
+const stylishResult = fs.readFileSync(readFile('stylish.txt'), 'utf8');
+const plainResult = fs.readFileSync(readFile('plain.txt'), 'utf8');
+const toJSONresult = fs.readFileSync(readFile('toJSON.txt'), 'utf8');
 
 
 describe('test all formatters', () => {
