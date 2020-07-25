@@ -1,6 +1,6 @@
 import { isObject, compact } from 'lodash';
 
-const valueToString = (n) => (isObject(n) ? '[complex value]' : n);
+const stringifyValue = (n) => (isObject(n) ? '[complex value]' : n);
 
 
 const makePathToNode = (node, coll) => {
@@ -22,7 +22,7 @@ const nodeTypes = [
   {
     check: (n) => n === 'changed',
     process: ({ key, beforeValue, afterValue }) => {
-      const content = afterValue ? `'${key}' was changed from ${valueToString(afterValue)} to ${valueToString(beforeValue)}` : `'${key}' was added with value: ${valueToString(beforeValue)}`;
+      const content = afterValue ? `'${key}' was changed from ${stringifyValue(afterValue)} to ${stringifyValue(beforeValue)}` : `'${key}' was added with value: ${stringifyValue(beforeValue)}`;
       return content;
     },
   },
@@ -38,17 +38,17 @@ const formatOutputLine = (node, coll) => {
   return `Property ${process(node, coll)}`;
 };
 
-const astToArray = (ast) => {
+const buildArray = (ast) => {
   const result = ast.flatMap((node) => {
     const main = node.type === 'unchanged' ? null : node;
-    const children = Array.isArray(node.beforeValue) ? astToArray(node.beforeValue) : null;
+    const children = Array.isArray(node.beforeValue) ? buildArray(node.beforeValue) : null;
     return [main, children].flat();
   });
   return result;
 };
 
 export default (ast) => {
-  const outputLines = compact(astToArray(ast));
+  const outputLines = compact(buildArray(ast));
   const formattedOutput = outputLines.flatMap((item) => formatOutputLine(item, outputLines)).join('\n');
   return formattedOutput;
 };

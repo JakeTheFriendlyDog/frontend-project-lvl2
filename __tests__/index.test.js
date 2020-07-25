@@ -6,10 +6,10 @@ import parse from '../src/parsers.js';
 
 const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', filename);
 const readFile = (filename) => getFixturePath(filename);
-const compareFiles = (pathToFirstFile, pathToSecondFile, chosenFormat) => {
+const compareFiles = (pathToFirstFile, pathToSecondFile, format) => {
   const firstFile = readFile(pathToFirstFile);
   const secondFile = readFile(pathToSecondFile);
-  const difference = genDiff(firstFile, secondFile, chosenFormat);
+  const difference = genDiff(firstFile, secondFile, format);
   return difference;
 };
 

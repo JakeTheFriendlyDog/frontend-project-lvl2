@@ -1,6 +1,9 @@
 import { isObject, identity } from 'lodash';
 
-const chooseSymbol = (type) => {
+const indentStep = 2;
+const indent = (n) => '  '.repeat(n * indentStep);
+
+const getSymbol = (type) => {
   switch (type) {
     case 'unchanged':
       return '  ';
@@ -13,18 +16,16 @@ const chooseSymbol = (type) => {
   }
 };
 
-const indent = (n) => '  '.repeat(n);
-
 const actions = [
   {
     check: (n) => Array.isArray(n),
-    process: (n, f, { ancestry }) => `{${indent(ancestry + 3)}${n.map(f).join('')}\n${indent(ancestry + 1)}}`,
+    process: (n, f, { ancestry }) => `{${indent(ancestry)}${n.map(f).join('')}\n${indent(ancestry)}}`,
   },
   {
     check: (n) => isObject(n),
     process: (n, f, { ancestry }) => {
       const [key, value] = Object.entries(n).flat();
-      return `{\n${indent(ancestry + 3)}${key}: ${value}\n${indent(ancestry + 1)}}`;
+      return `{\n${indent(ancestry)}${key}: ${value}\n${indent(ancestry)}}`;
     },
   },
   {
@@ -42,7 +43,7 @@ export default (ast) => {
       beforeValue,
     } = node;
     const { process } = actions.find(({ check }) => check(beforeValue));
-    return `\n${indent(ancestry)}${chooseSymbol(type)}${key}: ${process(beforeValue, makeNode, node)}`;
+    return `\n${indent(ancestry)}${getSymbol(type)}${key}: ${process(beforeValue, makeNode, node)}`;
   };
   return `{${ast.map(makeNode).join('')}\n}`;
 };
