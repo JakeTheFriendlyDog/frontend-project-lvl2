@@ -1,8 +1,6 @@
 import { isObject, mapValues } from 'lodash';
 import yaml from 'js-yaml';
 import ini from 'ini';
-import path from 'path';
-import fs from 'fs';
 
 
 const distinguishNumsInIniParser = (content) => (
@@ -12,19 +10,17 @@ const distinguishNumsInIniParser = (content) => (
   ))
 );
 
-const readFile = (filepath) => fs.readFileSync(filepath, 'utf8');
 
-export default (filepath) => {
-  const fileExtension = path.extname(path.resolve(filepath));
+export default (fileContent, fileExtension) => {
   switch (fileExtension) {
     case '.yaml':
     case '.yml':
-      return yaml.safeLoad(readFile(filepath));
+      return yaml.safeLoad(fileContent);
     case '.json':
-      return JSON.parse(readFile(filepath));
+      return JSON.parse(fileContent);
     case '.ini':
-      return distinguishNumsInIniParser(ini.parse(readFile(filepath)));
+      return distinguishNumsInIniParser(ini.parse(fileContent));
     default:
-      throw new Error(`Unknown extension: '${fileExtension}' ! Unable to parse '${filepath}'!`);
+      throw new Error(`Unknown extension: '${fileExtension}' ! Unable to parse '${fileContent}'!`);
   }
 };
