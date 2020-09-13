@@ -6,7 +6,7 @@ const stringifyValue = (n) => (isObject(n) ? '[complex value]' : n);
 const makePathToNode = (node, coll) => {
   const iter = ({ key, ancestry, parent }, arr, path) => {
     const newPath = [...path, key, parent];
-    if (parent === null || ancestry === 2) {
+    if (parent === null || ancestry === 1) {
       return compact(newPath).join('.');
     }
 

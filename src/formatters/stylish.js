@@ -23,9 +23,9 @@ const actions = [
   },
   {
     check: (n) => isObject(n),
-    process: (n, f, { ancestry }) => {
+    process: (n, f, { ancestry, type }) => {
       const [key, value] = Object.entries(n).flat();
-      return `{\n${indent(ancestry)}${key}: ${value}\n${indent(ancestry)}}`;
+      return `{\n${indent(ancestry)}${getSymbol(type)}${key}: ${value}\n${indent(ancestry)}}`;
     },
   },
   {
@@ -45,5 +45,6 @@ export default (ast) => {
     const { process } = actions.find(({ check }) => check(beforeValue));
     return `\n${indent(ancestry)}${getSymbol(type)}${key}: ${process(beforeValue, makeNode, node)}`;
   };
+  console.log(`{${ast.map(makeNode).join('')}\n}`);
   return `{${ast.map(makeNode).join('')}\n}`;
 };

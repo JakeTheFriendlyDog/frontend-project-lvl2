@@ -19,7 +19,7 @@ export default (firstFile, secondFile) => {
     return onlyUniqueKeys.flatMap(((key) => {
       if (keysFromFirst.includes(key) && keysFromSecond.includes(key)) {
         if (typeof first[key] === 'object' && typeof second[key] === 'object') {
-          const children = iter(first[key], second[key], ancestry + 2, key);
+          const children = iter(first[key], second[key], ancestry + 1, key);
           return makeNode(key, 'unchanged', ancestry, children, parent);
         }
         if (first[key] === second[key]) {
