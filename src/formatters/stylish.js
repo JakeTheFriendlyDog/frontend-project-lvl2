@@ -6,11 +6,11 @@ const indent = (n) => '  '.repeat(n * indentStep);
 const getSymbol = (type) => {
   switch (type) {
     case 'unchanged':
-      return '  ';
+      return '    ';
     case 'changed':
-      return '+ ';
+      return '  + ';
     case 'deleted':
-      return '- ';
+      return '  - ';
     default:
       throw new Error(`Unknown '${type}'! Unable to format output as stylish!`);
   }
@@ -19,13 +19,13 @@ const getSymbol = (type) => {
 const actions = [
   {
     check: (n) => Array.isArray(n),
-    process: (n, f, { ancestry }) => `{${indent(ancestry)}${n.map(f).join('')}\n${indent(ancestry)}}`,
+    process: (n, f, { ancestry }) => `{${n.map(f).join('')}\n${indent(ancestry + 1)}}`,
   },
   {
     check: (n) => isObject(n),
-    process: (n, f, { ancestry, type }) => {
+    process: (n, f, { ancestry }) => {
       const [key, value] = Object.entries(n).flat();
-      return `{\n${indent(ancestry)}${getSymbol(type)}${key}: ${value}\n${indent(ancestry)}}`;
+      return `{\n${indent(ancestry + 2)}${key}: ${value}\n${indent(ancestry + 1)}}`;
     },
   },
   {
@@ -45,6 +45,5 @@ export default (ast) => {
     const { process } = actions.find(({ check }) => check(beforeValue));
     return `\n${indent(ancestry)}${getSymbol(type)}${key}: ${process(beforeValue, makeNode, node)}`;
   };
-  console.log(`{${ast.map(makeNode).join('')}\n}`);
   return `{${ast.map(makeNode).join('')}\n}`;
 };
