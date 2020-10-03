@@ -11,16 +11,16 @@ const distinguishNumsInIniParser = (content) => (
 );
 
 
-export default (fileContent, fileExtension) => {
-  switch (fileExtension) {
+export default (data, dataFormat) => {
+  switch (dataFormat) {
     case '.yaml':
     case '.yml':
-      return yaml.safeLoad(fileContent);
+      return yaml.safeLoad(data);
     case '.json':
-      return JSON.parse(fileContent);
+      return JSON.parse(data);
     case '.ini':
-      return distinguishNumsInIniParser(ini.parse(fileContent));
+      return distinguishNumsInIniParser(ini.parse(data));
     default:
-      throw new Error(`Unknown extension: '${fileExtension}' ! Unable to parse '${fileContent}'!`);
+      throw new Error(`Unknown extension: '${dataFormat}' ! Unable to parse '${data}'!`);
   }
 };

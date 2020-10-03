@@ -7,16 +7,16 @@ import render from './formatters/index.js';
 const readFile = (filepath) => fs.readFileSync(filepath, 'utf8');
 const getFileExtension = (filepath) => path.extname(path.resolve(filepath));
 
-const getParsedFileContent = (pathToFile) => {
-  const fileContent = readFile(pathToFile);
-  const fileExtension = getFileExtension(pathToFile);
-  return parse(fileContent, fileExtension);
+const getParsedData = (pathToFile) => {
+  const data = readFile(pathToFile);
+  const dataFormat = getFileExtension(pathToFile);
+  return parse(data, dataFormat);
 };
 
 
 export default (pathToFirstFile, pathToSecondFile, format) => {
-  const firstFileParsed = getParsedFileContent(pathToFirstFile);
-  const secondFileParsed = getParsedFileContent(pathToSecondFile);
+  const firstFileParsed = getParsedData(pathToFirstFile);
+  const secondFileParsed = getParsedData(pathToSecondFile);
   const ast = buildAST(firstFileParsed, secondFileParsed);
   const formattedDifference = render(ast, format);
   return formattedDifference;
