@@ -10,7 +10,7 @@ const makeNode = (key, type, ancestry, beforeValue, parent, afterValue) => ({
 });
 
 
-export default (firstFile, secondFile) => {
+export default (firstData, secondData) => {
   const iter = (first, second, ancestry = 0, parent = null) => {
     const keysFromFirst = keys(first);
     const keysFromSecond = keys(second);
@@ -36,6 +36,6 @@ export default (firstFile, secondFile) => {
     }));
   };
 
-  const ast = iter(firstFile, secondFile);
+  const ast = iter(firstData, secondData);
   return ast;
 };
