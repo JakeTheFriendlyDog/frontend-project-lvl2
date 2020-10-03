@@ -1,4 +1,4 @@
-import { keys, union } from 'lodash';
+import { keys, union, has } from 'lodash';
 
 const makeNode = (key, type, ancestry, beforeValue, parent, afterValue) => ({
   key,
@@ -12,12 +12,10 @@ const makeNode = (key, type, ancestry, beforeValue, parent, afterValue) => ({
 
 export default (firstData, secondData) => {
   const iter = (first, second, ancestry = 0, parent = null) => {
-    const keysFromFirst = keys(first);
-    const keysFromSecond = keys(second);
-    const onlyUniqueKeys = union(keysFromFirst, keysFromSecond);
+    const onlyUniqueKeys = union(keys(first), keys(second));
 
     return onlyUniqueKeys.flatMap(((key) => {
-      if (keysFromFirst.includes(key) && keysFromSecond.includes(key)) {
+      if (has(first, key) && has(second, key)) {
         if (typeof first[key] === 'object' && typeof second[key] === 'object') {
           const children = iter(first[key], second[key], ancestry + 1, key);
           return makeNode(key, 'unchanged', ancestry, children, parent);
@@ -29,7 +27,7 @@ export default (firstData, secondData) => {
           makeNode(key, 'changed', ancestry, second[key], parent, first[key])];
       }
 
-      if (keysFromFirst.includes(key) && !keysFromSecond.includes(key)) {
+      if (has(first, key) && !has(second, key)) {
         return makeNode(key, 'deleted', ancestry, first[key], parent);
       }
       return makeNode(key, 'changed', ancestry, second[key], parent);
