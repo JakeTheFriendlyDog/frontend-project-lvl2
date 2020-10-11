@@ -9,6 +9,8 @@ const getSymbol = (type) => {
       return '    ';
     case 'changed':
       return '  + ';
+    case 'added':
+      return '  + ';
     case 'deleted':
       return '  - ';
     default:
@@ -19,13 +21,13 @@ const getSymbol = (type) => {
 const actions = [
   {
     check: (n) => Array.isArray(n),
-    process: (n, f, { ancestry }) => `{${n.map(f).join('')}\n${indent(ancestry + 1)}}`,
+    process: (n, f, { depth }) => `{${n.map(f).join('')}\n${indent(depth + 1)}}`,
   },
   {
     check: (n) => isObject(n),
-    process: (n, f, { ancestry }) => {
+    process: (n, f, { depth }) => {
       const [key, value] = Object.entries(n).flat();
-      return `{\n${indent(ancestry + 2)}${key}: ${value}\n${indent(ancestry + 1)}}`;
+      return `{\n${indent(depth + 2)}${key}: ${value}\n${indent(depth + 1)}}`;
     },
   },
   {
@@ -39,11 +41,11 @@ export default (ast) => {
     const {
       key,
       type,
-      ancestry,
+      depth,
       beforeValue,
     } = node;
     const { process } = actions.find(({ check }) => check(beforeValue));
-    return `\n${indent(ancestry)}${getSymbol(type)}${key}: ${process(beforeValue, makeNode, node)}`;
+    return `\n${indent(depth)}${getSymbol(type)}${key}: ${process(beforeValue, makeNode, node)}`;
   };
   return `{${ast.map(makeNode).join('')}\n}`;
 };

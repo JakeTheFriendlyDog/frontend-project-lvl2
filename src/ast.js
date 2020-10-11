@@ -1,35 +1,35 @@
 import { keys, union, has } from 'lodash';
 
-const makeNode = (key, type, ancestry, beforeValue, parent, afterValue) => ({
-  key,
-  type,
-  ancestry,
-  beforeValue,
-  parent,
-  afterValue,
-});
-
-
 export default (firstData, secondData) => {
-  const iter = (first, second, ancestry = 0, parent = null) => {
+  const iter = (first, second, depth = 0) => {
     const onlyUniqueKeys = union(keys(first), keys(second));
 
     return onlyUniqueKeys.flatMap(((key) => {
       if (!has(first, key)) {
-        return makeNode(key, 'added', ancestry, second[key], parent);
+        return {
+          key, type: 'added', depth, value: second[key],
+        };
       }
       if (!has(second, key)) {
-        return makeNode(key, 'deleted', ancestry, first[key], parent);
+        return {
+          key, type: 'deleted', depth, value: first[key],
+        };
       }
 
       if (typeof first[key] === 'object' && typeof second[key] === 'object') {
-        const children = iter(first[key], second[key], ancestry + 1, key);
-        return makeNode(key, 'unchanged', ancestry, children, parent);
+        const children = iter(first[key], second[key], depth + 1);
+        return {
+          key, type: 'hasChildren', depth, children,
+        };
       }
       if (first[key] === second[key]) {
-        return makeNode(key, 'unchanged', ancestry, first[key], parent);
+        return {
+          key, type: 'unchanged', depth, value: first[key],
+        };
       }
-      return makeNode(key, 'changed', ancestry, second[key], parent, first[key]);
+      return {
+        key, type: 'changed', depth, beforeValue: second[key], afterValue: first[key],
+      };
     }));
   };
 
