@@ -6,9 +6,9 @@ const indent = (n) => '  '.repeat(n * indentStep);
 const getSymbol = (type) => {
   switch (type) {
     case 'unchanged':
+    case 'hasChildren':
       return '    ';
     case 'changed':
-      return '  + ';
     case 'added':
       return '  + ';
     case 'deleted':

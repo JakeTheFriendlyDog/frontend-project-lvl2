@@ -28,7 +28,7 @@ export default (firstData, secondData) => {
         };
       }
       return {
-        key, type: 'changed', depth, beforeValue: second[key], afterValue: first[key],
+        key, type: 'changed', depth, beforeValue: first[key], afterValue: second[key],
       };
     }));
   };
