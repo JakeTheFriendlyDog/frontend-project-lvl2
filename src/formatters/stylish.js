@@ -1,51 +1,44 @@
-import { isObject, identity } from 'lodash';
+import { isObject, keys } from 'lodash';
 
-const indentStep = 2;
-const indent = (n) => '  '.repeat(n * indentStep);
+const indent = (n) => '  '.repeat(n);
 
-const getSymbol = (type) => {
-  switch (type) {
-    case 'unchanged':
-    case 'hasChildren':
-      return '    ';
-    case 'changed':
-    case 'added':
-      return '  + ';
-    case 'deleted':
-      return '  - ';
-    default:
-      throw new Error(`Unknown '${type}'! Unable to format output as stylish!`);
+
+const stringify = (item, depth) => {
+  if (!isObject(item)) {
+    return item;
   }
+  const result = keys(item).map((key) => `${indent(depth + 4)}${key}: ${item[key]}`);
+  return ['{', ...result, `${indent(depth + 2)}}`].join('\n');
 };
 
-const actions = [
-  {
-    check: (n) => Array.isArray(n),
-    process: (n, f, { depth }) => `{${n.map(f).join('')}\n${indent(depth + 1)}}`,
-  },
-  {
-    check: (n) => isObject(n),
-    process: (n, f, { depth }) => {
-      const [key, value] = Object.entries(n).flat();
-      return `{\n${indent(depth + 2)}${key}: ${value}\n${indent(depth + 1)}}`;
-    },
-  },
-  {
-    check: (n) => !isObject(n),
-    process: identity,
-  },
-];
-
 export default (ast) => {
-  const makeNode = (node) => {
-    const {
-      key,
-      type,
-      depth,
-      beforeValue,
-    } = node;
-    const { process } = actions.find(({ check }) => check(beforeValue));
-    return `\n${indent(depth)}${getSymbol(type)}${key}: ${process(beforeValue, makeNode, node)}`;
+  const iter = (tree, depth) => {
+    const result = tree.map((node) => {
+      const {
+        key,
+        type,
+        value,
+        children,
+        beforeValue,
+        afterValue,
+      } = node;
+      switch (type) {
+        case 'added':
+          return `${indent(depth + 1)}+ ${key}: ${stringify(value, depth)}`;
+        case 'deleted':
+          return `${indent(depth + 1)}- ${key}: ${stringify(value, depth)}`;
+        case 'unchanged':
+          return `${indent(depth + 1)}  ${key}: ${stringify(value, depth)}`;
+        case 'changed':
+          return `${indent(depth + 1)}- ${key}: ${stringify(beforeValue, depth)}\n${indent(depth + 1)}+ ${key}: ${stringify(afterValue, depth)}`;
+        case 'hasChildren':
+          return `${indent(depth + 1)}  ${key}: ${iter(children, depth + 2)}`;
+        default:
+          throw new Error(`Error! Type '${type}' is unknown.`);
+      }
+    });
+    return ['{', ...result, `${indent(depth)}}`].join('\n');
   };
-  return `{${ast.map(makeNode).join('')}\n}`;
+
+  return iter(ast, 0);
 };
