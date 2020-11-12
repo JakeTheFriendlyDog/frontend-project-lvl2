@@ -15,9 +15,9 @@ const getParsedData = (pathToFile) => {
 
 
 export default (pathToFirstFile, pathToSecondFile, format) => {
-  const firstFileParsed = getParsedData(pathToFirstFile);
-  const secondFileParsed = getParsedData(pathToSecondFile);
-  const ast = buildAST(firstFileParsed, secondFileParsed);
+  const firstParsedData = getParsedData(pathToFirstFile);
+  const secondParsedData = getParsedData(pathToSecondFile);
+  const ast = buildAST(firstParsedData, secondParsedData);
   const formattedDifference = render(ast, format);
   return formattedDifference;
 };
